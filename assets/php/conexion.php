@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php'; // Asegúrate de haber instalado la librería con composer
+require 'vendor/autoload.php';
 
 // Crear una conexión a MongoDB
 $client = new MongoDB\Client("mongodb://localhost:27017");
