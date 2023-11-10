@@ -11,5 +11,5 @@ $nombreBaseDeDatos = 'prueba';
 $client = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/$nombreBaseDeDatos");
 
 // Seleccionar la base de datos
-$db = $client->$nombreBaseDeDatos;
+$db = $client->selectDatabase($nombreBaseDeDatos);
 ?>
