@@ -4,7 +4,7 @@ require __DIR__ . '/../../vendor/autoload.php'; // Carga la biblioteca de MongoD
 $host = 'localhost';
 $puerto = '32773';
 $usuario = 'davidrg';
-$contrasena = 'QG0N2thg';
+$contrasena = '98I7VkyhpWbhqz';
 $nombreBaseDeDatos = 'prueba';
 
 // Crear una conexión a MongoDB con autenticación
