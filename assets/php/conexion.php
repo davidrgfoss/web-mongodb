@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
+require __DIR__ . '/../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
 
 $host = 'localhost';
 $puerto = '32773';
