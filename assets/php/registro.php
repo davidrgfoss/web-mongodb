@@ -1,5 +1,5 @@
 <?php
-require '/../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
+require __DIR__ . '/../../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
 
 if (!empty($_POST)) {
     if (isset($_POST["username"]) && isset($_POST["fullname"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm_password"])) {
