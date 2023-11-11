@@ -2,7 +2,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 try {
-    $client = new MongoDB\Client("mongodb://davidrg:98I7VkyhpWbhqz@localhost:32773/prueba");
+    $client = new MongoDB\Client("mongodb://davidrg:98I7VkyhpWbhqz@localhost:32768/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
     $db = $client->selectDatabase('prueba');
     $collection = $db->selectCollection('usuarios');
 
