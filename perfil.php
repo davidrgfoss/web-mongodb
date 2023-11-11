@@ -67,7 +67,7 @@ $datos = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["use
                                         <td><?php echo htmlspecialchars($datos['fullname']); ?></td>
                                         <td><?php echo htmlspecialchars($datos['username']); ?></td>
                                         <td><?php echo htmlspecialchars($datos['email']); ?></td>
-                                        <td><?php echo htmlspecialchars($datos['created_at']->toDateTime()->format('Y-m-d H:i:s')); ?></td>
+                                        <td><?php echo isset($datos['create_at']) ? $datos['create_at']->toDateTime()->format('Y-m-d H:i:s') : 'No disponible'; ?></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -84,7 +84,5 @@ $datos = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["use
 
         <!-- Scripts -->
         <script src="assets/javascript/jquery.min.js"></script>
-        <!-- ... Resto de scripts ... -->
-
     </body>
 </html>
