@@ -2,7 +2,7 @@
 require __DIR__ . '/../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
 
 $host = 'localhost';
-$puerto = '32768';
+$puerto = '32769';
 $usuario = 'davidrg';
 $contrasena = '98I7VkyhpWbhqz';
 $nombreBaseDeDatos = 'prueba';
