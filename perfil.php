@@ -16,10 +16,10 @@ $datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId
 
 // Verifica si el usuario logueado es "raul"
 if (isset($datosUsuario['username']) && strtolower($datosUsuario['username']) === 'raul') {
-    // Selecciona la colección productos
-    $collectiongnrec = $db->productos;
-    // Recupera todos los datos de la colección productos
-    $datosproductos = $collectiongnrec->find()->toArray();
+    // Cambia la conexión a la DB 'gnrec' y selecciona la colección 'productos'
+    $collectionProductos = (new MongoDB\Client)->gnrec->productos;
+    // Recupera todos los datos de la colección 'productos'
+    $datosproductos = $collectionProductos->find()->toArray();
 }
 ?>
 
@@ -102,40 +102,40 @@ if (isset($datosUsuario['username']) && strtolower($datosUsuario['username']) ==
         </div>
     </section>
 
-    <!-- Sección para mostrar datos de productos si el usuario es Raul -->
-    <?php if (isset($datosproductos) && !empty($datosproductos)) : ?>
-        <section id="productps" class="wrapper style2">
-            <div class="inner">
-                <div class="box">
-                    <div class="content">
-                        <header class="align-center">
-                            <h2>Datos de los productos de gnrec</h2>
-                        </header>
-                        <div class="table-wrapper">
-                            <table class="alt">
-                                <thead>
+<!-- Sección para mostrar datos de productos si el usuario es Raul -->
+<?php if (isset($datosproductos) && !empty($datosproductos)) : ?>
+    <section id="productos" class="wrapper style2">
+        <div class="inner">
+            <div class="box">
+                <div class="content">
+                    <header class="align-center">
+                        <h2>Datos de los productos de GNREC</h2>
+                    </header>
+                    <div class="table-wrapper">
+                        <table class="alt">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($datosproductos as $prod) : ?>
                                     <tr>
-                                        <th>codigo</th>
-                                        <th>cliente</th>
-                                        <th>unidades</th>
+                                        <td><?php echo htmlspecialchars($prod['codigo']); ?></td>
+                                        <td><?php echo htmlspecialchars($prod['descripcion']); ?></td>
+                                        <td><?php echo htmlspecialchars($prod['precio']); ?></td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($datosproductos as $prod) : ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($prod['codigo']); ?></td>
-                                            <td><?php echo htmlspecialchars($prod['descripcion']); ?></td>
-                                            <td><?php echo htmlspecialchars($prod['precio']); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </section>
-    <?php endif; ?>
+        </div>
+    </section>
+<?php endif; ?>
 
     <!-- Pie de pagina -->
     <footer id="footer">
