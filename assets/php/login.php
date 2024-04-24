@@ -1,30 +1,33 @@
 <?php
-require __DIR__ . '/../../vendor/autoload.php'; // Asegura que la ruta al autoload es correcta
-session_start(); // Inicia sesión al principio del script
+require __DIR__ . '/../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
 
-// Parámetros de conexión
-$host = 'localhost';
-$puerto = '32769';
-$usuario = 'davidrg';
-$contrasena = '98I7VkyhpWbhqz';
-$nombreBaseDeDatosUsuarios = 'prueba';
+if (!empty($_POST)) {
+    if (isset($_POST['username']) && isset($_POST['password'])) {
+        if ($_POST['username'] != "" && $_POST['password'] != "") {
+            include "conexion.php";
 
-// Crear una conexión a MongoDB con autenticación
-$clientUsuarios = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/$nombreBaseDeDatosUsuarios?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
-$dbUsuarios = $clientUsuarios->selectDatabase($nombreBaseDeDatosUsuarios);
-$collectionUsuarios = $dbUsuarios->usuarios;
+            $collection = $db->usuarios; // Selecciona la colección
 
-// Asumiendo que estos datos vienen de un formulario de login
-if (isset($_POST['username']) && isset($_POST['password'])) {
-    $usuario = $collectionUsuarios->findOne(['username' => $_POST['username']]);
+            // En MongoDB, debes usar find() para buscar documentos
+            $usuario = $collection->findOne([
+                'username' => $_POST['username'],
+                // No debes guardar o verificar contraseñas en texto plano
+                // 'password' => $_POST['password']
+            ]);
 
-    if ($usuario && password_verify($_POST['password'], $usuario['password'])) {
-        $_SESSION['user_id'] = (string) $usuario['_id']; // Convierte ObjectId a string
-        header("Location: perfil.php");
-        exit;
-    } else {
-        echo "<script>alert('Usuario o contraseña incorrectos.'); window.location='../formulario de acceso/index.php';</script>";
-        exit;
+            // Verifica que el usuario exista y que la contraseña sea correcta
+            // Asegúrate de usar una función de hash para la contraseña al crear los usuarios
+            if ($usuario && password_verify($_POST['password'], $usuario['password'])) {
+                session_start();
+                $_SESSION['user_id'] = (string) $usuario['_id']; // MongoDB usa objetos del tipo ObjectId
+                $_SESSION['user_username'] = $usuario['username'];
+
+                print "<script>window.location='../../index.php';</script>";
+            } else {
+                print "<script>alert(\"No has introducido los datos correctamente.\");window.location='../formulario de acceso/index.php';</script>";
+            }
+        }
     }
 }
 ?>
+
