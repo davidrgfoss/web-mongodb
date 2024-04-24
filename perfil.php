@@ -7,7 +7,7 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 
-include "conexion.php"; // Asegúrate que este script define $db correctamente
+include "assets/php/conexion.php";
 
 $collectionUsuarios = $db->usuarios;
 // Asegúrate de convertir el string de la sesión a un ObjectId
