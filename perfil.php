@@ -12,16 +12,9 @@ include "assets/php/conexion.php";
 $collectionUsuarios = $db->usuarios;
 $datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
 $productos = [];  // Inicializa la variable productos
-
-// Comprobar si el usuario logueado es "raul" y cargar la información de productos
-if (strtolower($datosUsuario['username']) === 'raul') {
-    // Cambiar la conexión a la base de datos 'gnrec'
-    $clientProductos = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/gnrec?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
-    $dbProductos = $clientProductos->selectDatabase('gnrec');
-    $collectionProductos = $dbProductos->productos;
-    $productos = $collectionProductos->find()->toArray(); // Obtener todos los productos
-}
 ?>
+
+
 
 <!DOCTYPE HTML>
 <html lang="es">
@@ -101,7 +94,16 @@ if (strtolower($datosUsuario['username']) === 'raul') {
                 </div>
             </div>
         </section>
-
+<?php
+// Comprobar si el usuario logueado es "raul" y cargar la información de productos
+if (strtolower($datosUsuario['username']) === 'raul') {
+    // Cambiar la conexión a la base de datos 'gnrec'
+    $clientProductos = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/gnrec?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
+    $dbProductos = $clientProductos->selectDatabase('gnrec');
+    $collectionProductos = $dbProductos->productos;
+    $productos = $collectionProductos->find()->toArray(); // Obtener todos los productos
+}
+?>
         <!-- Tabla de productos, solo si el usuario es Raul -->
         <?php if (!empty($productos)): ?>
         <h3>Productos de GNREC</h3>
