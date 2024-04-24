@@ -29,7 +29,39 @@ $productos = $_SESSION['productos']; // Esto solo estará disponible si el usuar
         <link rel="stylesheet" href="assets/css/main.css" />
     </head>
     <body>
-        <!-- Cabecera y navegación ... -->
+
+        <!-- Cabecera -->
+        <header id="header" class="alt">
+            <div class="logo"><a href="index.php">Bienvenido a<span> DRAM</span></a></div>
+            <a href="#menu"><?php echo isset($_SESSION['user_username']) ? htmlspecialchars($_SESSION['user_username']) : 'Menu'; ?></a>
+        </header>
+
+        <!-- Menu de navegacion -->
+			<nav id="menu">
+				<ul class="links">
+				<li><a href="index.php">Inicio</a></li>
+				<?php if(!isset($_SESSION["user_id"])):?>
+					<li><a href="assets/formulario de registro/index.php">Registrate</a></li>
+					<li><a href="assets/formulario de acceso/index.php">Accede</a></li>
+					<li><a href="conocenos.php">Conoce la empresa</a></li>
+					<?php else:?>
+					<li><a href="cpu.php">Nuevos desarrollos</a></li>
+					<li><a href="enseñanzas.php">¿Quieres aprender?</a></li>
+					<li><a href="contactar.php">Ayuda</a></li>
+					<li><a href="assets/php/logout.php">Desconectar usuario</a></li>
+					<?php endif;?>
+				</ul>
+			</nav>
+
+        <!-- Titulo principal -->
+			<section id="One" class="wrapper style3">
+				<div class="inner">
+					<header class="align-center">
+						<p>Tu informacion</p>
+						<h2>Porque lo sabemos todo de ti</h2>
+					</header>
+				</div>
+			</section>
 
         <!-- Información del usuario -->
         <section id="two" class="wrapper style2">
@@ -45,6 +77,7 @@ $productos = $_SESSION['productos']; // Esto solo estará disponible si el usuar
                                         <th>Nombre real completo</th>
                                         <th>Nombre de usuario</th>
                                         <th>Correo electrónico</th>
+                                        <!-- La contraseña no debe mostrarse -->
                                         <th>Fecha de creación del perfil</th>
                                     </tr>
                                 </thead>
@@ -95,7 +128,22 @@ $productos = $_SESSION['productos']; // Esto solo estará disponible si el usuar
         </section>
         <?php endif; ?>
 
-        <!-- Pie de página ... -->
+        <!-- Pie de pagina -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="https://twitter.com/DRAMSA231" target="_blank" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="https://www.facebook.com/DRAMSA231" target="_blank" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+						<li><a href="https://www.instagram.com/DRAMSA231/" target="_blank" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="mailto:DRAM@dram.com" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+					</ul>
+				</div>
+				<div class="copyright">
+					&copy; DRAM. Todos los derechos reservados.
+				</div>
+			</footer>
 
+        <!-- Scripts -->
+        <script src="assets/javascript/jquery.min.js"></script>
     </body>
 </html>
