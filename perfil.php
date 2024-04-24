@@ -8,8 +8,8 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
 
 include "assets/php/conexion.php";
 
-// Selecciona la colección de usuarios
-$collectionUsuarios = $db->usuarios;
+// Conexión a la DB 'prueba' para todos los usuarios
+$collectionUsuarios = (new MongoDB\Client)->prueba->usuarios;
 
 // Recupera los datos del usuario de MongoDB utilizando su ID de sesión
 $datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
