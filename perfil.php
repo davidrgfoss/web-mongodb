@@ -9,8 +9,11 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
 include "assets/php/conexion.php";
 
 // Buscar la información del usuario en la base de datos
-$collectionUsuarios = $db->usuarios;
-$datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
+// Selecciona la colección de usuarios
+$collection = $db->usuarios;
+
+// Recupera los datos del usuario de MongoDB utilizando su ID de sesión
+$datos = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
 $productos = [];  // Inicializa la variable productos
 ?>
 
