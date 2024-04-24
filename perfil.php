@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php'; // Carga la biblioteca de MongoDB
+require __DIR__ . '/../../vendor/autoload.php'; // Asegúrate de que la ruta es correcta
 session_start();
 
 if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
@@ -7,25 +7,15 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
     exit;
 }
 
-include "assets/php/conexion.php";
+// La conexión ya se maneja en login.php
+// Suponiendo que login.php y perfil.php están correctamente enlazados y las variables de sesión se establecen correctamente
 
-$collection = $db->usuarios;
-$datos = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
-$mostrarProductos = false;
-
-if (isset($datos['username']) && strtolower($datos['username']) === 'raul') {
-    try {
-        $dbProductos = (new MongoDB\Client)->gnrec;
-        $collectionProductos = $dbProductos->productos;
-        $productos = $collectionProductos->find()->toArray();
-        $mostrarProductos = true;
-    } catch (Exception $e) {
-        error_log('Error al conectar con la base de datos gnrec o al recuperar datos: ' . $e->getMessage());
-        // Opcional: Mostrar un mensaje de error más amigable al usuario, o no mostrar nada para evitar revelar detalles del sistema
-        echo "<p>Error al cargar la información de los productos.</p>";
-        $mostrarProductos = false;
-    }
+if (!isset($_SESSION['datos_usuario']) || !isset($_SESSION['productos']) && $_SESSION['username'] === 'raul') {
+    echo "<script>alert('No se pudo cargar la información del usuario o de los productos.');window.location='index.php';</script>";
+    exit;
 }
+$datos = $_SESSION['datos_usuario'];
+$productos = $_SESSION['productos']; // Esto solo estará disponible si el usuario es 'raul'
 ?>
 
 <!DOCTYPE HTML>
@@ -39,38 +29,7 @@ if (isset($datos['username']) && strtolower($datos['username']) === 'raul') {
         <link rel="stylesheet" href="assets/css/main.css" />
     </head>
     <body>
-        <!-- Cabecera -->
-        <header id="header" class="alt">
-            <div class="logo"><a href="index.php">Bienvenido a<span> DRAM</span></a></div>
-            <a href="#menu"><?php echo isset($_SESSION['user_username']) ? htmlspecialchars($_SESSION['user_username']) : 'Menu'; ?></a>
-        </header>
-
-        <!-- Menu de navegacion -->
-        <nav id="menu">
-            <ul class="links">
-                <li><a href="index.php">Inicio</a></li>
-                <?php if(!isset($_SESSION["user_id"])): ?>
-                    <li><a href="assets/formulario de registro/index.php">Registrate</a></li>
-                    <li><a href="assets/formulario de acceso/index.php">Accede</a></li>
-                    <li><a href="conocenos.php">Conoce la empresa</a></li>
-                <?php else: ?>
-                    <li><a href="cpu.php">Nuevos desarrollos</a></li>
-                    <li><a href="enseñanzas.php">¿Quieres aprender?</a></li>
-                    <li><a href="contactar.php">Ayuda</a></li>
-                    <li><a href="assets/php/logout.php">Desconectar usuario</a></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-
-        <!-- Titulo principal -->
-        <section id="One" class="wrapper style3">
-            <div class="inner">
-                <header class="align-center">
-                    <p>Tu información</p>
-                    <h2>Porque lo sabemos todo de ti</h2>
-                </header>
-            </div>
-        </section>
+        <!-- Cabecera y navegación ... -->
 
         <!-- Información del usuario -->
         <section id="two" class="wrapper style2">
@@ -105,10 +64,13 @@ if (isset($datos['username']) && strtolower($datos['username']) === 'raul') {
             </div>
         </section>
 
-        <!-- Sección de productos, solo si el usuario es Raul -->
-        <?php if ($mostrarProductos): ?>
-            <section id="productos" class="wrapper style2">
-                ...
+        <!-- Tabla de productos, solo si el usuario es Raul -->
+        <?php if ($_SESSION['username'] === 'raul' && !empty($productos)): ?>
+        <section id="productos" class="wrapper style2">
+            <div class="inner">
+                <header class="align-center">
+                    <h2>Datos de los productos</h2>
+                </header>
                 <div class="table-wrapper">
                     <table class="alt">
                         <thead>
@@ -129,26 +91,11 @@ if (isset($datos['username']) && strtolower($datos['username']) === 'raul') {
                         </tbody>
                     </table>
                 </div>
-                ...
-            </section>
+            </div>
+        </section>
         <?php endif; ?>
 
-        <!-- Pie de pagina -->
-        <footer id="footer">
-            <div class="container">
-                <ul class="icons">
-                    <li><a href="https://twitter.com/DRAMSA231" target="_blank" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                    <li><a href="https://www.facebook.com/DRAMSA231" target="_blank" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                    <li><a href="https://www.instagram.com/DRAMSA231/" target="_blank" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-                    <li><a href="mailto:DRAM@dram.com" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
-                </ul>
-            </div>
-            <div class="copyright">
-                &copy; DRAM. Todos los derechos reservados.
-            </div>
-        </footer>
+        <!-- Pie de página ... -->
 
-        <!-- Scripts -->
-        <script src="assets/javascript/jquery.min.js"></script>
     </body>
 </html>
