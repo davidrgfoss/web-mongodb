@@ -1,33 +1,37 @@
 <?php
 require __DIR__ . '/../../vendor/autoload.php'; // Carga la biblioteca de MongoDB
 
-if (!empty($_POST)) {
-    if (isset($_POST['username']) && isset($_POST['password'])) {
-        if ($_POST['username'] != "" && $_POST['password'] != "") {
-            include "conexion.php";
+// Conexión a la base de datos de usuarios
+$host = 'localhost';
+$puerto = '32769';
+$usuario = 'davidrg';
+$contrasena = '98I7VkyhpWbhqz';
+$nombreBaseDeDatosUsuarios = 'prueba';
 
-            $collection = $db->usuarios; // Selecciona la colección
+$clientUsuarios = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/$nombreBaseDeDatosUsuarios?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
+$dbUsuarios = $clientUsuarios->selectDatabase($nombreBaseDeDatosUsuarios);
 
-            // En MongoDB, debes usar find() para buscar documentos
-            $usuario = $collection->findOne([
-                'username' => $_POST['username'],
-                // No debes guardar o verificar contraseñas en texto plano
-                // 'password' => $_POST['password']
-            ]);
+session_start();
+if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
+    echo "<script>alert('Necesitas estar registrado para acceder!');window.location='index.php';</script>";
+    exit;
+}
 
-            // Verifica que el usuario exista y que la contraseña sea correcta
-            // Asegúrate de usar una función de hash para la contraseña al crear los usuarios
-            if ($usuario && password_verify($_POST['password'], $usuario['password'])) {
-                session_start();
-                $_SESSION['user_id'] = (string) $usuario['_id']; // MongoDB usa objetos del tipo ObjectId
-                $_SESSION['user_username'] = $usuario['username'];
+$collectionUsuarios = $dbUsuarios->usuarios;
+$datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
 
-                print "<script>window.location='../../index.php';</script>";
-            } else {
-                print "<script>alert(\"No has introducido los datos correctamente.\");window.location='../formulario de acceso/index.php';</script>";
-            }
-        }
+// Verificar si el usuario logueado es "raul"
+if (isset($datosUsuario['username']) && strtolower($datosUsuario['username']) === 'raul') {
+    // Conexión a la base de datos de productos
+    $nombreBaseDeDatosProductos = 'gnrec';
+    $clientProductos = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/$nombreBaseDeDatosProductos?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
+    $dbProductos = $clientProductos->selectDatabase($nombreBaseDeDatosProductos);
+
+    try {
+        $collectionProductos = $dbProductos->productos;
+        $productos = $collectionProductos->find()->toArray();
+    } catch (Exception $e) {
+        echo "<p>Error al cargar la información de los productos: " . $e->getMessage() . "</p>";
     }
 }
 ?>
-
