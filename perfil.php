@@ -1,21 +1,26 @@
 <?php
-require __DIR__ . '/../../vendor/autoload.php'; // Asegúrate de que la ruta es correcta
+require 'vendor/autoload.php'; // Carga la biblioteca de MongoDB
 session_start();
 
 if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
-    echo "<script>alert('Necesitas estar registrado para acceder!');window.location='index.php';</script>";
-    exit;
+    print "<script>alert(\"Necesitas estar registrado para acceder!\");window.location='index.php';</script>";
 }
 
-// La conexión ya se maneja en login.php
-// Suponiendo que login.php y perfil.php están correctamente enlazados y las variables de sesión se establecen correctamente
+include "assets/php/conexion.php";
 
-if (!isset($_SESSION['datos_usuario']) || !isset($_SESSION['productos']) && $_SESSION['username'] === 'raul') {
-    echo "<script>alert('No se pudo cargar la información del usuario o de los productos.');window.location='index.php';</script>";
-    exit;
+// Buscar la información del usuario en la base de datos
+$collectionUsuarios = $db->usuarios;
+$datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
+$productos = [];  // Inicializa la variable productos
+
+// Comprobar si el usuario logueado es "raul" y cargar la información de productos
+if (strtolower($datosUsuario['username']) === 'raul') {
+    // Cambiar la conexión a la base de datos 'gnrec'
+    $clientProductos = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/gnrec?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
+    $dbProductos = $clientProductos->selectDatabase('gnrec');
+    $collectionProductos = $dbProductos->productos;
+    $productos = $collectionProductos->find()->toArray(); // Obtener todos los productos
 }
-$datos = $_SESSION['datos_usuario'];
-$productos = $_SESSION['productos']; // Esto solo estará disponible si el usuario es 'raul'
 ?>
 
 <!DOCTYPE HTML>
@@ -98,36 +103,28 @@ $productos = $_SESSION['productos']; // Esto solo estará disponible si el usuar
         </section>
 
         <!-- Tabla de productos, solo si el usuario es Raul -->
-        <?php if ($_SESSION['username'] === 'raul' && !empty($productos)): ?>
-        <section id="productos" class="wrapper style2">
-            <div class="inner">
-                <header class="align-center">
-                    <h2>Datos de los productos</h2>
-                </header>
-                <div class="table-wrapper">
-                    <table class="alt">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Descripción</th>
-                                <th>Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($productos as $producto): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($producto['codigo']); ?></td>
-                                    <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
-                                    <td><?php echo htmlspecialchars($producto['precio']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
+        <?php if (!empty($productos)): ?>
+        <h3>Productos de GNREC</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($productos as $producto): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($producto['codigo']); ?></td>
+                    <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
+                    <td><?php echo htmlspecialchars($producto['precio']); ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
         <?php endif; ?>
-
+	    
         <!-- Pie de pagina -->
 			<footer id="footer">
 				<div class="container">
