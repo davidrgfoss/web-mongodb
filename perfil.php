@@ -9,20 +9,22 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_id"] == null) {
 
 include "assets/php/conexion.php";
 
-// Selecciona la colección de usuarios
 $collection = $db->usuarios;
-
-// Recupera los datos del usuario de MongoDB utilizando su ID de sesión
 $datos = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
-
-// Verificar si el usuario logueado es "raul"
 $mostrarProductos = false;
+
 if (isset($datos['username']) && strtolower($datos['username']) === 'raul') {
-    $mostrarProductos = true;
-    // Cambia la base de datos a 'gnrec' y selecciona la colección 'productos'
-    $dbProductos = (new MongoDB\Client)->gnrec;
-    $collectionProductos = $dbProductos->productos;
-    $productos = $collectionProductos->find()->toArray();
+    try {
+        $dbProductos = (new MongoDB\Client)->gnrec;
+        $collectionProductos = $dbProductos->productos;
+        $productos = $collectionProductos->find()->toArray();
+        $mostrarProductos = true;
+    } catch (Exception $e) {
+        error_log('Error al conectar con la base de datos gnrec o al recuperar datos: ' . $e->getMessage());
+        // Opcional: Mostrar un mensaje de error más amigable al usuario, o no mostrar nada para evitar revelar detalles del sistema
+        echo "<p>Error al cargar la información de los productos.</p>";
+        $mostrarProductos = false;
+    }
 }
 ?>
 
@@ -106,35 +108,28 @@ if (isset($datos['username']) && strtolower($datos['username']) === 'raul') {
         <!-- Sección de productos, solo si el usuario es Raul -->
         <?php if ($mostrarProductos): ?>
             <section id="productos" class="wrapper style2">
-                <div class="inner">
-                    <div class="box">
-                        <div class="content">
-                            <header class="align-center">
-                                <h2>Datos de los productos</h2>
-                            </header>
-                            <div class="table-wrapper">
-                                <table class="alt">
-                                    <thead>
-                                        <tr>
-                                            <th>Código</th>
-                                            <th>Descripción</th>
-                                            <th>Precio</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($productos as $producto): ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($producto['codigo']); ?></td>
-                                                <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
-                                                <td><?php echo htmlspecialchars($producto['precio']); ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                ...
+                <div class="table-wrapper">
+                    <table class="alt">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($productos as $producto): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($producto['codigo']); ?></td>
+                                    <td><?php echo htmlspecialchars($producto['descripcion']); ?></td>
+                                    <td><?php echo htmlspecialchars($producto['precio']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
+                ...
             </section>
         <?php endif; ?>
 
