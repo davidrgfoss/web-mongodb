@@ -13,7 +13,7 @@ $collectionUsuarios = $db->usuarios;
 $datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId($_SESSION["user_id"])]);
 $productos = [];  // Inicializa la variable productos
 
-// Comprobar si el usuario logueado es "raul" y cargar la información de productos
+// Comprobar si el usuario es raul
 if (strtolower($datosUsuario['username']) === 'raul') {
     // Cambiar la conexión a la base de datos 'gnrec'
     $clientProductos = new MongoDB\Client("mongodb://$usuario:$contrasena@$host:$puerto/gnrec?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin");
