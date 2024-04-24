@@ -17,7 +17,7 @@ $datosUsuario = $collectionUsuarios->findOne(['_id' => new MongoDB\BSON\ObjectId
 // Verifica si el usuario logueado es "raul"
 if (isset($datosUsuario['username']) && strtolower($datosUsuario['username']) === 'raul') {
     // Selecciona la colección productos
-    $collectiongnrec = gnrec->productos;
+    $collectiongnrec = $db->productos;
     // Recupera todos los datos de la colección productos
     $datosproductos = $collectiongnrec->find()->toArray();
 }
